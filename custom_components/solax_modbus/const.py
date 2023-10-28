@@ -11,9 +11,10 @@ from homeassistant.components.number import (
 )
 from homeassistant.components.select import SelectEntityDescription
 from homeassistant.components.button import ButtonEntityDescription
+from homeassistant.components.time import TimeEntityDescription
 from homeassistant.helpers.entity import EntityCategory
 from pymodbus.payload import Endian
-from datetime import datetime
+from datetime import datetime, time
 from dataclasses import dataclass, replace
 import pathlib
 
@@ -97,6 +98,7 @@ class plugin_base:
     BUTTON_TYPES: list[ButtonEntityDescription]
     NUMBER_TYPES: list[NumberEntityDescription]
     SELECT_TYPES: list[SelectEntityDescription]
+    TIME_TYPES: list[TimeEntityDescription]
     block_size: int = 100
     auto_block_ignore_readerror: bool = None # if True or False, inserts a ignore_readerror statement for each block
     order16: int = None # Endian.BIG or Endian.LITTLE
@@ -181,6 +183,15 @@ class BaseModbusNumberEntityDescription(NumberEntityDescription):
     unit: int = None #  optional for WRITE_DATA_LOCAL e.g REGISTER_U16, REGISTER_S32 ...
     prevent_update: bool = False # if set to True, value will not be re-read/updated with each polling cycle; only when read value changes
 
+@dataclass
+class BaseModbusTimeEntityDescription(TimeEntityDescription):
+    allowedtypes: int = 0 # overload with ALLDEFAULT from plugin
+    register: int = None
+    blacklist: list = None # none or list of serial number prefixes
+    #native_value: time.isoformat = None
+    option_dict: dict = None
+    write_method: int = WRITE_SINGLE_MODBUS # WRITE_SINGLE_MOBUS or WRITE_MULTI_MODBUS or WRITE_DATA_LOCAL
+    #unit: int = None #  optional for WRITE_DATA_LOCAL e.g REGISTER_U16, REGISTER_S32 ...
 
 # ========================= autorepeat aux functions to be used on hub.data dictionary ===============================
 

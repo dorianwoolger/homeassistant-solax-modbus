@@ -2,11 +2,11 @@
 import asyncio
 import logging
 import threading
-from datetime import datetime, timedelta
+from datetime import datetime, time, timedelta
 from typing import Optional
 #import importlib.util, sys
 import importlib
-from time import time
+#from time import time
 import json
 
 import homeassistant.helpers.config_validation as cv
@@ -66,7 +66,7 @@ from .const import (
 from .const import REGISTER_S32, REGISTER_U32, REGISTER_U16, REGISTER_S16, REGISTER_ULSB16MSB16, REGISTER_STR, REGISTER_WORDS, REGISTER_U8H, REGISTER_U8L
 
 
-PLATFORMS = ["button", "number", "select", "sensor"] 
+PLATFORMS = ["button", "number", "select", "sensor", "time"] 
 
 #seriesnumber = 'unknown'
 
@@ -551,7 +551,7 @@ class SolaXModbusHub:
                 val = self.writequeue.get(addr)
                 self.write_register(self._modbus_addr, addr, val)
             self.writequeue = {} # make sure we do not write multiple times
-        self.last_ts = time()
+        self.last_ts = time.time()
         for (k,v,) in self.data['_repeatUntil'].items(): 
             if self.last_ts < v: 
                 buttondescr = self.computedButtons[k]
