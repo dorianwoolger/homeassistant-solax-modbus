@@ -96,18 +96,24 @@ class SolaXModbusTime(TimeEntity):
         return f"{self._platform_name}_{self._key}"
 
     #@property
-    #def native_value(self) -> time | None:
-    #    """Return the value reported by the time."""
-    #    return time(self.entity_description).isoformat
+    #def native_value(self) -> float:
+    #    _LOGGER.info(f"debug 1 {self._hub}")
+    #    descr = self.entity_description
+    #    _LOGGER.info(f"debug 2 {descr}")
+    #    return descr
 
-    def set_value(self, value: time) -> None:
-        """Change the time."""
+    #def set_value(self, value: time) -> None:
+    #    """Change the time."""
+    #    self._attr_native_value = time(hour=self._key,minute=self._key)
         #setattr(self._option_dict, self.entity_description.key, value)
-        return self._attr_native_value
+        #value = self._attr_native_value
+        #_LOGGER.info(f"native value {value}")
+        #return value
 
-    async def async_select_option(self, value: time) -> None:
-        """Change the select option."""
+    async def async_set_value(self, value: time) -> None:
+        """Change the time."""
         payload = get_payload(self._option_dict, value)
+        _LOGGER.info(f"writing {self._platform_name} select register {self._register} payload before writing {payload}")
         if self._write_method == WRITE_MULTISINGLE_MODBUS:
             _LOGGER.info(f"writing {self._platform_name} select register {self._register} value {payload}")
             self._hub.write_registers_single(unit=self._modbus_addr, address=self._register, payload=payload)
